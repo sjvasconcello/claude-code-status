@@ -8,14 +8,25 @@ set "SCRIPT_DIR=%~dp0"
 set "SCRIPT_PATH=%SCRIPT_DIR%claude_status.py"
 set "TASK_NAME=ClaudeUsageMonitor"
 
-:: Obtener ruta de pythonw.exe
-for /f "delims=" %%i in ('where pythonw 2^>nul') do set "PYTHONW=%%i"
-if "%PYTHONW%"=="" (
-    for /f "delims=" %%i in ('where python 2^>nul') do set "PYTHONW=%%i"
+:: Verificar que uv esté instalado
+uv --version >nul 2>&1
+if errorlevel 1 (
+    echo ERROR: uv no está instalado.
+    echo Instálalo desde: https://docs.astral.sh/uv/getting-started/installation/
+    echo O con PowerShell: irm https://astral.sh/uv/install.ps1 ^| iex
+    pause
+    exit /b 1
 )
 
-if "%PYTHONW%"=="" (
-    echo ERROR: Python no encontrado en PATH.
+:: Sincronizar dependencias para asegurar que el entorno virtual existe
+echo Sincronizando dependencias...
+uv sync --quiet
+
+:: Usar pythonw del entorno virtual creado por uv
+set "PYTHONW=%SCRIPT_DIR%.venv\Scripts\pythonw.exe"
+if not exist "%PYTHONW%" (
+    echo ERROR: No se encontró pythonw.exe en el entorno virtual.
+    echo Asegúrate de haber ejecutado start.bat al menos una vez.
     pause
     exit /b 1
 )

@@ -1,0 +1,13 @@
+[project]
+name = "claude-code-status"
+version = "1.0.0"
+description = "Widget flotante para Windows que muestra el uso de Claude y cuándo se renueva tu plan"
+requires-python = ">=3.8"
+dependencies = [
+    "requests>=2.28.0",
+]
+
+[tool.uv]
+# Dependencias opcionales (futuro: ícono en bandeja del sistema)
+# pystray>=0.19.0
+# Pillow>=9.0.0

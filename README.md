@@ -32,6 +32,7 @@ Widget flotante para Windows que muestra tu uso de Claude y cuándo se renueva t
 |-----------|---------------|
 | Windows   | 10 / 11       |
 | Python    | 3.8+          |
+| uv        | cualquiera    |
 
 > **¿Por qué Python y no un .exe?**
 > Distribuir como script `.py` evita completamente los falsos positivos de antivirus.
@@ -43,18 +44,26 @@ Widget flotante para Windows que muestra tu uso de Claude y cuándo se renueva t
 
 ## Instalación paso a paso
 
-### 1. Instalar Python
+### 1. Instalar uv
 
-1. Ve a <https://www.python.org/downloads/>
-2. Descarga Python 3.11 o superior (recomendado)
-3. **Importante:** durante la instalación, marca la casilla **"Add Python to PATH"**
-4. Completa la instalación
+`uv` es un gestor de paquetes y entornos virtuales para Python, más rápido que pip.
+
+**Con PowerShell (recomendado):**
+```powershell
+irm https://astral.sh/uv/install.ps1 | iex
+```
+
+**Con pip (si ya tienes Python):**
+```cmd
+pip install uv
+```
 
 Verifica que funciona abriendo `cmd` y escribiendo:
 ```cmd
-python --version
+uv --version
 ```
-Deberías ver algo como `Python 3.11.x`.
+
+> uv instalará Python automáticamente si no lo tienes. No es necesario instalar Python por separado.
 
 ### 2. Descargar el proyecto
 
@@ -71,8 +80,10 @@ Descarga el ZIP desde GitHub → "Code" → "Download ZIP" → extrae la carpeta
 
 Abre `cmd` en la carpeta del proyecto y ejecuta:
 ```cmd
-pip install -r requirements.txt
+uv sync
 ```
+
+Esto crea automáticamente un entorno virtual (`.venv/`) e instala `requests`.
 
 > `requests` es la única dependencia. tkinter ya viene incluido con Python.
 
@@ -80,12 +91,12 @@ pip install -r requirements.txt
 
 **Forma simple (con ventana de consola visible para ver errores):**
 ```cmd
-python claude_status.py
+uv run python claude_status.py
 ```
 
 **Forma silenciosa (sin consola, recomendado para uso diario):**
 ```cmd
-pythonw claude_status.py
+.venv\Scripts\pythonw.exe claude_status.py
 ```
 O simplemente haz **doble clic en `start.bat`**.
 
@@ -177,7 +188,7 @@ schtasks /delete /tn "ClaudeUsageMonitor" /f
 ### "tkinter no disponible"
 - En Windows esto no debería ocurrir, pero si pasa:
   - Desinstala Python y reinstala marcando todas las opciones
-  - O instala: `pip install tk`
+  - Con uv: `uv python install 3.11` instala una versión con tkinter incluido
 
 ### El antivirus bloquea el script
 - Los archivos `.py` no deberían ser bloqueados
@@ -199,10 +210,11 @@ schtasks /delete /tn "ClaudeUsageMonitor" /f
 ```
 claude-code-status/
 ├── claude_status.py        # Aplicación principal
+├── pyproject.toml          # Configuración del proyecto y dependencias (uv)
+├── requirements.txt        # Dependencias (compatibilidad pip)
 ├── start.bat               # Lanzador silencioso (doble clic)
 ├── start_visible.bat       # Lanzador con consola (para debug)
 ├── install_autostart.bat   # Configura inicio automático
-├── requirements.txt        # Dependencias pip
 └── README.md               # Este archivo
 ```
 
