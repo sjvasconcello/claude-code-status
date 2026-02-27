@@ -1,0 +1,9 @@
+# Claude Monitor - Dependencias
+# Instalar con: pip install -r requirements.txt
+
+# Necesario para consultas a la API de Anthropic (opcional)
+requests>=2.28.0
+
+# Necesario para crear ícono en la bandeja del sistema (opcional, futuro)
+# pystray>=0.19.0
+# Pillow>=9.0.0
